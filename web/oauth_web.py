@@ -62,8 +62,8 @@ def callback():
         return f"❌ Lấy user thất bại: {user_res}"
 
     user_id = user_res["id"]
-    username = user_res["username"]
-    avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{user_res['avatar']}.png?size=256"
+    username = user_res.get("username", "Unknown")
+    avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{user_res.get('avatar','')}.png?size=256"
 
     # --- Gán role verify ---
     r = requests.put(
@@ -73,7 +73,7 @@ def callback():
     if r.status_code not in (200, 204):
         return f"❌ Không cấp được role: {r.text}"
 
-    # --- Page verify đẹp full ---
+    # --- Page verify với ảnh nền ---
     html = f"""
 <!DOCTYPE html>
 <html lang="vi">
@@ -86,10 +86,10 @@ body {{
     display:flex; justify-content:center; align-items:center;
     font-family: 'Segoe UI', Tahoma, sans-serif;
     overflow:hidden;
-    background: url('https://cdn.discordapp.com/attachments/1386850583217967164/1460740439819948066/93384E15-2EB0-43E1-94AE-D470EC7E3119.gif?ex=6968040c&is=6966b28c&hm=c5c50de4bb38e8bc6715d906478ce5d991a7eeb1f494b3001e61bd16c3baa5ce&') center/cover no-repeat;
+    background: url('https://cdn.discordapp.com/attachments/1386850583217967164/1460744184804671618/IMG_7835.jpg?ex=69680788&is=6966b608&hm=aba4afea7a117e195be4479ee462dfc79b655d820297926f5d1e65ac0901c4b5&') center/cover no-repeat;
 }}
 .card {{
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.6);
     padding:50px 60px;
     border-radius:20px;
     text-align:center;
@@ -134,7 +134,7 @@ a.button:hover{{ transform:translateY(-3px) scale(1.03); box-shadow:0 6px 20px r
 <div class="card">
     <img class="avatar" src="{avatar_url}" alt="Avatar Discord">
     <h1>✅ Xác minh thành công!</h1>
-    <p>Xin chào <b>{username}</b> Bạn Đã Xác Minh Xon</p>
+    <p>Xin chào <b>{username}</b> chúc mừng bạn đến với FlexicX</p>
     <a class="button" href="https://discord.com/app">
         <span class="emoji">💖</span> Quay lại Discord
     </a>
