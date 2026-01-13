@@ -152,9 +152,9 @@ createConfetti();
 </body>
 </html>
 """
-    return render_template_string(html, username=user["username"], avatar_url=avatar_url)
+return render_template_string(html, username=user["username"], avatar_url=avatar_url)
     
-    if __name__ == "__main__":
+if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))  # port do Render cung cấp
     app.run(host="0.0.0.0", port=port, debug=False)
