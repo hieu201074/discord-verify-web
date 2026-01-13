@@ -1,20 +1,20 @@
-# oauth_web.py
+# oauth_web_gradient.py
 from flask import Flask, request, render_template_string
 import requests, urllib.parse, os
 
 app = Flask(__name__)
 
 # -----------------------------
-# CẤU HÌNH TRONG FILE
+# CẤU HÌNH
 # -----------------------------
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 GUILD_ID = os.getenv("GUILD_ID")
 VERIFY_ROLE_ID = os.getenv("VERIFY_ROLE_ID")
-REDIRECT_URL = os.getenv("REDIRECT_URL")  # ví dụ: https://discord-verify-web.onrender.com/callback
+REDIRECT_URL = os.getenv("REDIRECT_URL")  # https://discord-verify-web.onrender.com/callback
 
-# Verify URL
+# Tạo Verify URL
 encoded_redirect = urllib.parse.quote(REDIRECT_URL, safe='')
 VERIFY_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={encoded_redirect}&response_type=code&scope=identify%20guilds.join"
 
@@ -23,7 +23,13 @@ VERIFY_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&re
 # -----------------------------
 @app.route("/")
 def index():
-    return f'<a href="{VERIFY_URL}" style="font-size:20px;">➡️ Nhấn để Verify Discord</a>'
+    return f'''
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+        <a href="{VERIFY_URL}" style="text-decoration:none;font-size:22px;background:#7289da;color:white;padding:20px 40px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            ➡️ Nhấn để Verify Discord
+        </a>
+    </div>
+    '''
 
 @app.route("/callback")
 def callback():
@@ -73,7 +79,7 @@ def callback():
     if r.status_code not in (200, 204):
         return f"❌ Không cấp được role: {r.text}"
 
-    # --- Page verify với ảnh nền tĩnh ---
+    # --- Page verify gradient card & button ---
     html = f"""
 <!DOCTYPE html>
 <html lang="vi">
@@ -85,40 +91,40 @@ body {{
     margin:0; padding:0; height:100vh;
     display:flex; justify-content:center; align-items:center;
     font-family: 'Segoe UI', Tahoma, sans-serif;
+    background:#121212;
+    color:white;
     overflow:hidden;
-    background: url('https://cdn.discordapp.com/attachments/1386850583217967164/1460744184804671618/IMG_7835.jpg?ex=69680788&is=6966b608&hm=aba4afea7a117e195be4479ee462dfc79b655d820297926f5d1e65ac0901c4b5&') center/cover no-repeat;
 }}
 .card {{
-    background: rgba(0,0,0,0.6);
+    background: linear-gradient(145deg, #4e54c8, #8f94fb);
     padding:50px 60px;
-    border-radius:20px;
+    border-radius:25px;
     text-align:center;
-    color:white;
-    box-shadow:0 8px 30px rgba(0,0,0,0.5);
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:20px;
+    gap:25px;
     animation:fadeIn 1s ease forwards;
 }}
 h1{{ font-size:3em; margin:0; animation:bounce 1s; }}
 p{{ font-size:1.5em; margin:0; }}
-.avatar{{ width:128px; height:128px; border-radius:50%; border:4px solid #ffce00; box-shadow:0 4px 15px rgba(0,0,0,0.5); animation:fadeIn 2s ease forwards; }}
+.avatar{{ width:128px; height:128px; border-radius:50%; border:4px solid #ffce00; box-shadow:0 4px 20px rgba(0,0,0,0.6); }}
 a.button{{
     text-decoration:none;
-    background:#7289da;
+    background: linear-gradient(45deg, #ff6ec4, #7873f5);
     color:white;
-    padding:1em 2em;
-    border-radius:15px;
+    padding:1em 2.5em;
+    border-radius:25px;
     font-weight:bold;
-    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    box-shadow:0 5px 20px rgba(0,0,0,0.4);
     transition:0.3s transform,0.3s box-shadow;
     display:inline-flex;
     align-items:center;
-    gap:10px;
-    font-size:1.2em;
+    gap:12px;
+    font-size:1.3em;
 }}
-a.button:hover{{ transform:translateY(-3px) scale(1.03); box-shadow:0 6px 20px rgba(0,0,0,0.5); }}
+a.button:hover{{ transform:translateY(-4px) scale(1.05); box-shadow:0 10px 25px rgba(0,0,0,0.6); }}
 .emoji{{ animation:wiggle 1s infinite; }}
 .confetti {{
     position: fixed; width:10px; height:10px; background: yellow;
