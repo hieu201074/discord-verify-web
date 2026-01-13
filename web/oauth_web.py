@@ -73,7 +73,7 @@ def callback():
     if r.status_code not in (200, 204):
         return f"❌ Không cấp được role: {r.text}"
 
-    # --- Page verify với ảnh nền ---
+    # --- Page verify với ảnh nền tĩnh ---
     html = f"""
 <!DOCTYPE html>
 <html lang="vi">
@@ -134,7 +134,7 @@ a.button:hover{{ transform:translateY(-3px) scale(1.03); box-shadow:0 6px 20px r
 <div class="card">
     <img class="avatar" src="{avatar_url}" alt="Avatar Discord">
     <h1>✅ Xác minh thành công!</h1>
-    <p>Xin chào <b>{username}</b> chúc mừng bạn đến với FlexicX</p>
+    <p>Xin chào <b>{username}</b></p>
     <a class="button" href="https://discord.com/app">
         <span class="emoji">💖</span> Quay lại Discord
     </a>
