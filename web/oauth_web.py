@@ -45,7 +45,7 @@ def callback():
 
     access_token = token_res.get("access_token")
     if not access_token:
-        return "❌ OAuth2 thất bại"
+        return "❌ OAuth2 thất bại: {token_res}"
 
     # Lấy thông tin user
     user = requests.get(
