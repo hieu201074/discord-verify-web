@@ -152,7 +152,7 @@ createConfetti();
 </body>
 </html>
 """
-return render_template_string(html, username=user["username"], avatar_url=avatar_url)
+    return render_template_string(html, username=user["username"], avatar_url=avatar_url)
     
 if __name__ == "__main__":
     import os
