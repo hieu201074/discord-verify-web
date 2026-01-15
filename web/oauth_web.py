@@ -1,179 +1,187 @@
+import os
+import requests
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+# ========= ENV =========
+CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
+CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+GUILD_ID = os.getenv("GUILD_ID")
+VERIFY_ROLE_ID = os.getenv("VERIFY_ROLE_ID")
+
+
+@app.route("/callback")
+def callback():
+    code = request.args.get("code")
+    if not code:
+        return "❌ Thiếu code OAuth"
+
+    # ===== ĐỔI CODE -> ACCESS TOKEN =====
+    token_res = requests.post(
+        "https://discord.com/api/oauth2/token",
+        data={
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": REDIRECT_URI
+        },
+        headers={"Content-Type": "application/x-www-form-urlencoded"}
+    ).json()
+
+    access_token = token_res.get("access_token")
+    if not access_token:
+        return f"❌ OAuth2 thất bại: {token_res}"
+
+    # ===== LẤY USER =====
+    user = requests.get(
+        "https://discord.com/api/users/@me",
+        headers={"Authorization": f"Bearer {access_token}"}
+    ).json()
+
+    avatar = (
+        f"https://cdn.discordapp.com/avatars/{user['id']}/{user['avatar']}.png?size=256"
+        if user.get("avatar")
+        else "https://cdn.discordapp.com/embed/avatars/0.png"
+    )
+
+    # ===== CẤP ROLE =====
+    requests.put(
+        f"https://discord.com/api/v10/guilds/{GUILD_ID}/members/{user['id']}/roles/{VERIFY_ROLE_ID}",
+        headers={"Authorization": f"Bot {BOT_TOKEN}"}
+    )
+
+    # ===== HTML =====
+    html = """
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Verify Success</title>
-
+<title>Verified</title>
 <style>
-* {
-    box-sizing: border-box;
+body{
+    margin:0;
+    height:100vh;
+    background:#0b0f1a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI,sans-serif;
+    color:white;
 }
 
-body {
-    margin: 0;
-    height: 100vh;
-    background: radial-gradient(circle at top, #111827, #020617);
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* CARD GIỮA */
+.card{
+    background:linear-gradient(135deg,#5865F2,#8b5cf6);
+    padding:45px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 25px 60px rgba(0,0,0,.6);
+}
+.avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:4px solid white;
+    margin-bottom:15px;
+}
+.verified{
+    margin-top:10px;
+    font-size:14px;
+    opacity:.95;
 }
 
-/* ===== VERIFY CARD ===== */
-.verify-card {
-    background: rgba(17,24,39,.9);
-    padding: 34px 40px;
-    border-radius: 22px;
-    text-align: center;
-    box-shadow: 0 0 50px rgba(88,101,242,.55);
-    animation: fadeUp .6s ease;
+/* CARD DEV */
+.dev-card{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#111827;
+    padding:15px 18px;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,.7);
+    transition:.3s;
+}
+.dev-card:hover{
+    transform:translateY(-6px);
 }
 
-.avatar {
-    width: 104px;
-    height: 104px;
-    border-radius: 50%;
-    border: 3px solid #5865F2;
-    margin-bottom: 14px;
+/* DEV HEADER + BADGE */
+.dev-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+}
+.dev-badge{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#5865F2,#22d3ee);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    box-shadow:0 0 12px rgba(88,101,242,.9);
+    transition:.3s;
+}
+.dev-card:hover .dev-badge{
+    transform:rotate(20deg) scale(1.15);
 }
 
-.status {
-    color: #22c55e;
-    font-size: 22px;
-    font-weight: 600;
+.dev-name{
+    font-size:14px;
+    font-weight:600;
 }
 
-.username {
-    margin-top: 6px;
-    font-size: 16px;
-    opacity: .9;
+/* FB BUTTON */
+.fb-btn{
+    display:inline-block;
+    padding:6px 14px;
+    background:#1877F2;
+    border-radius:12px;
+    font-size:12px;
+    color:white;
+    text-decoration:none;
+    transition:.25s;
 }
-
-.wait {
-    margin-top: 10px;
-    font-size: 13px;
-    opacity: .65;
-}
-
-/* ===== DEV CARD ===== */
-.dev-card {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    width: 190px;
-    padding: 14px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #5865F2, #3b82f6);
-    box-shadow: 0 14px 30px rgba(0,0,0,.45);
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.dev-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 22px 45px rgba(0,0,0,.6);
-}
-
-.dev-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.dev-badge {
-    width: 22px;
-    height: 22px;
-    filter: drop-shadow(0 0 6px rgba(255,255,255,.5));
-}
-
-.dev-name {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.dev-sub {
-    font-size: 11px;
-    opacity: .85;
-    margin-top: 2px;
-}
-
-.fb-btn {
-    display: block;
-    margin-top: 10px;
-    padding: 7px 0;
-    background: #1877F2;
-    color: white;
-    border-radius: 10px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 12px;
-    transition: background .2s ease;
-}
-
-.fb-btn:hover {
-    background: #0f5ed7;
-}
-
-/* ===== TOOLTIP ===== */
-.dev-card::after {
-    content: "DEV CHÍNH CHỦ";
-    position: absolute;
-    top: -26px;
-    right: 0;
-    background: black;
-    padding: 4px 8px;
-    font-size: 11px;
-    border-radius: 6px;
-    opacity: 0;
-    transition: .25s;
-    pointer-events: none;
-}
-
-.dev-card:hover::after {
-    opacity: 1;
-}
-
-/* ===== ANIMATION ===== */
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.fb-btn:hover{
+    background:#0f5ecb;
 }
 </style>
 </head>
-
 <body>
 
-<!-- VERIFY -->
-<div class="verify-card">
-    <img class="avatar" src="{{ avatar_url }}">
-    <div class="status">✔ Xác minh thành công</div>
-    <div class="username">{{ username }}</div>
-    <div class="wait">Vui lòng chờ admin phê duyệt</div>
+<!-- CARD GIỮA -->
+<div class="card">
+    <img class="avatar" src="{{avatar}}">
+    <h2>{{username}}</h2>
+    <div class="verified">✔ Verified</div>
 </div>
 
-<!-- DEV -->
+<!-- CARD DEV -->
 <div class="dev-card">
-    <div class="dev-top">
-        <img class="dev-badge"
-             src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg">
-        <div>
-            <div class="dev-name">Minh Hiếu</div>
-            <div class="dev-sub">Discord Developer</div>
-        </div>
+    <div class="dev-header">
+        <div class="dev-badge">★</div>
+        <div class="dev-name">Dev Code By Minh Hieu</div>
     </div>
-
-    <a class="fb-btn"
-       href="https://facebook.com/banlagiv"
-       target="_blank">
-        Facebook
-    </a>
+    <a class="fb-btn" href="https://facebook.com/banlagiv" target="_blank">Facebook</a>
 </div>
 
 </body>
 </html>
+"""
+    return render_template_string(
+        html,
+        username=user["username"],
+        avatar=avatar
+    )
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
