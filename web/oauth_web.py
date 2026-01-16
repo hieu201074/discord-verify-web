@@ -97,24 +97,25 @@ body{
     opacity:.9;
 }
 
-/* ===== CARD DEV ===== */
+/* ===== CARD DEV (TO HƠN NỮA) ===== */
 .dev{
     position:fixed;
-    top:22px;
-    right:22px;
-    background:#111827;
-    padding:20px 24px;      /* TO HƠN */
-    border-radius:26px;     /* BO GÓC XỊN */
+    top:26px;
+    right:26px;
+    background:linear-gradient(135deg,#111827,#1f2933);
+    padding:26px 30px;        /* TO HƠN */
+    border-radius:32px;       /* BO GÓC LỚN */
     display:flex;
     align-items:center;
-    gap:14px;
-    box-shadow:0 20px 60px rgba(0,0,0,.7);
+    gap:18px;                 /* GIÃN RỘNG */
+    box-shadow:0 28px 80px rgba(0,0,0,.85);
 }
 
 .dev img{
-    width:56px;
-    height:56px;
+    width:72px;               /* AVATAR TO */
+    height:72px;
     border-radius:50%;
+    border:3px solid #5865F2;
 }
 
 .dev-info{
@@ -123,18 +124,20 @@ body{
 }
 
 .dev-name{
-    font-weight:800;
-    font-size:16px;
+    font-weight:900;
+    font-size:18px;           /* CHỮ TO */
+    letter-spacing:.3px;
 }
 
 .dev a{
-    margin-top:6px;
+    margin-top:8px;
     background:#1877F2;
-    padding:6px 14px;
-    border-radius:14px;
+    padding:8px 18px;         /* NÚT TO */
+    border-radius:16px;
     color:white;
     text-decoration:none;
-    font-size:13px;
+    font-size:14px;
+    font-weight:600;
     text-align:center;
 }
 </style>
