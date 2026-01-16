@@ -327,18 +327,9 @@ body{
 </div>
 
 <div class="dev">
-    <img src="https://cdn.discordapp.com/avatars/888766767814553620/6518abba7bc2e7d2ad259fa569298396.png?size=4096size=128">
-
-    <div>
-        <div class="dev-name">
-            Minh Hieu
-            <span class="discord-badge">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9.999 15.171l-3.88-3.88-1.414 1.414 5.294 5.294L20.7 7.293l-1.414-1.414z"/>
-                </svg>
-            </span>
-        </div>
-
+    <img src="https://cdn.discordapp.com/avatars/888766767814553620/6518abba7bc2e7d2ad259fa569298396.png?size=4096">
+    <div class="dev-info">
+        <div class="dev-name">Dev Code By Minh Hiếu</div>
         <a href="https://facebook.com/banlagiv" target="_blank">Facebook</a>
     </div>
 </div>
