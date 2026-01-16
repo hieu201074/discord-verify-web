@@ -187,7 +187,48 @@ body{
     padding:6px 12px;
     border-radius:12px;
     color:white;
-    text-decoration:none;
+    text-decoration:
+}
+.dev{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#111827;
+    padding:12px 14px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+
+.dev img{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+}
+
+.dev-name{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:700;
+}
+
+.discord-badge{
+    width:18px;
+    height:18px;
+    background:#5865F2;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.discord-badge svg{
+    width:12px;
+    height:12px;
+    fill:white;
 }
 </style>
 </head>
@@ -205,8 +246,20 @@ body{
 </div>
 
 <div class="dev">
-<b>Dev Code By Minh Hieu</b>
-<a href="https://facebook.com/banlagiv" target="_blank">Facebook</a>
+    <img src="https://cdn.discordapp.com/avatars/888766767814553620/6518abba7bc2e7d2ad259fa569298396.png?size=4096size=128">
+
+    <div>
+        <div class="dev-name">
+            Minh Hieu
+            <span class="discord-badge">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9.999 15.171l-3.88-3.88-1.414 1.414 5.294 5.294L20.7 7.293l-1.414-1.414z"/>
+                </svg>
+            </span>
+        </div>
+
+        <a href="https://facebook.com/banlagiv" target="_blank">Facebook</a>
+    </div>
 </div>
 
 </body>
