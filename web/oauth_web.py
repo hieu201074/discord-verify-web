@@ -191,33 +191,33 @@ body{
 }
 .dev{
     position:fixed;
-    top:20px;
-    right:20px;
+    top:24px;
+    right:24px;
     background:#111827;
-    padding:12px 14px;
-    border-radius:18px;
+    padding:18px 22px;
+    border-radius:22px;
     display:flex;
     align-items:center;
-    gap:10px;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    gap:14px;
+    box-shadow:0 16px 50px rgba(0,0,0,.65);
 }
 
 .dev img{
-    width:42px;
-    height:42px;
+    width:56px;
+    height:56px;
     border-radius:50%;
 }
 
 .dev-name{
     display:flex;
     align-items:center;
-    gap:6px;
-    font-weight:700;
+    gap:17px;
+    font-weight:800;
 }
 
 .discord-badge{
-    width:18px;
-    height:18px;
+    width:22px;
+    height:22px;
     background:#5865F2;
     border-radius:50%;
     display:flex;
@@ -226,8 +226,8 @@ body{
 }
 
 .discord-badge svg{
-    width:12px;
-    height:12px;
+    width:14px;
+    height:14px;
     fill:white;
 }
 </style>
