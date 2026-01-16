@@ -48,24 +48,94 @@ def home():
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 body{
-    margin:0;height:100vh;
-    display:flex;justify-content:center;align-items:center;
-    background:#0b0f1a;color:white;
+    margin:0;
+    height:100vh;
+    background:#0b0f1a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     font-family:Segoe UI,sans-serif;
+    color:white;
 }
-.box{
-    background:#111827;
-    padding:48px;border-radius:30px;
+
+/* ===== CARD GIỮA ===== */
+.card{
+    background:linear-gradient(135deg,#5865F2,#7c3aed);
+    padding:55px 60px;        /* TO HƠN */
+    border-radius:30px;
     text-align:center;
-    box-shadow:0 25px 80px rgba(0,0,0,.7);
+    box-shadow:0 30px 80px rgba(0,0,0,.7);
+    max-width:340px;
 }
-button{
-    margin-top:20px;
-    padding:14px 36px;
-    border:none;border-radius:18px;
-    background:#5865F2;
-    color:white;font-weight:600;
-    cursor:pointer;
+
+.avatar{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    border:5px solid white;
+    margin-bottom:14px;
+}
+
+.name{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    font-size:22px;
+    font-weight:800;
+}
+
+.verify-text{
+    margin-top:12px;
+    font-weight:700;
+    font-size:18px;
+}
+
+.thank-text{
+    margin-top:14px;
+    font-size:14px;
+    opacity:.9;
+}
+
+/* ===== CARD DEV ===== */
+.dev{
+    position:fixed;
+    top:22px;
+    right:22px;
+    background:#111827;
+    padding:20px 24px;      /* TO HƠN */
+    border-radius:26px;     /* BO GÓC XỊN */
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 20px 60px rgba(0,0,0,.7);
+}
+
+.dev img{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+}
+
+.dev-info{
+    display:flex;
+    flex-direction:column;
+}
+
+.dev-name{
+    font-weight:800;
+    font-size:16px;
+}
+
+.dev a{
+    margin-top:6px;
+    background:#1877F2;
+    padding:6px 14px;
+    border-radius:14px;
+    color:white;
+    text-decoration:none;
+    font-size:13px;
+    text-align:center;
 }
 </style>
 </head>
@@ -235,14 +305,22 @@ body{
 <body>
 
 <div class="card">
-<img src="{{avatar}}" class="avatar">
-<div class="name">
-<span>{{username}}</span>
-<svg width="20" height="20" fill="#22c55e" viewBox="0 0 24 24">
-<path d="M12 2l2.39 2.39 3.38-.49.49 3.38L22 12l-2.39 2.39.49 3.38-3.38.49L12 22l-2.39-2.39-3.38.49-.49-3.38L2 12l2.39-2.39-.49-3.38 3.38-.49z"/>
-</svg>
-</div>
-<div style="margin-top:10px;font-weight:700">Verified</div>
+    <img class="avatar" src="{{avatar}}">
+    
+    <div class="name">
+        <span>{{username}}</span>
+        <!-- BADGE DISCORD -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#22c55e">
+            <path d="M12 2.39l2.39 4.85 5.35.78-3.87 3.77.91 5.32L12 14.9l-4.78 2.51.91-5.32-3.87-3.77 5.35-.78L12 2.39z"/>
+        </svg>
+    </div>
+
+    <div class="verify-text">✔ Xác Minh Thành Công</div>
+
+    <div class="thank-text">
+        Cảm ơn bạn đã xác minh<br>
+        Bạn có thể quay lại Discord
+    </div>
 </div>
 
 <div class="dev">
