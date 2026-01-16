@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, render_template_string
+from flask import Flask, request, redirect, render_template_string
 
 app = Flask(__name__)
 
@@ -14,13 +14,74 @@ GUILD_ID = os.getenv("GUILD_ID")
 VERIFY_ROLE_ID = os.getenv("VERIFY_ROLE_ID")
 
 
+# ========= HOME =========
+@app.route("/")
+def home():
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+<title>Verify</title>
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0b0f1a;
+    font-family:Segoe UI,sans-serif;
+    color:white;
+}
+.box{
+    background:#111827;
+    padding:40px;
+    border-radius:22px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+a{
+    display:inline-block;
+    margin-top:18px;
+    padding:12px 26px;
+    background:#5865F2;
+    color:white;
+    text-decoration:none;
+    border-radius:14px;
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+<div class="box">
+    <h2>Verification</h2>
+    <p>Nhấn nút dưới để xác minh</p>
+    <a href="/login">Verify</a>
+</div>
+</body>
+</html>
+"""
+
+
+# ========= LOGIN =========
+@app.route("/login")
+def login():
+    return redirect(
+        "https://discord.com/api/oauth2/authorize"
+        f"?client_id={CLIENT_ID}"
+        f"&redirect_uri={REDIRECT_URI}"
+        "&response_type=code"
+        "&scope=identify"
+    )
+
+
+# ========= CALLBACK =========
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
     if not code:
         return "❌ Thiếu code OAuth"
 
-    # ===== ĐỔI CODE -> ACCESS TOKEN =====
     token_res = requests.post(
         "https://discord.com/api/oauth2/token",
         data={
@@ -35,9 +96,8 @@ def callback():
 
     access_token = token_res.get("access_token")
     if not access_token:
-        return f"❌ OAuth2 thất bại: {token_res}"
+        return f"❌ OAuth2 lỗi: {token_res}"
 
-    # ===== LẤY USER =====
     user = requests.get(
         "https://discord.com/api/users/@me",
         headers={"Authorization": f"Bearer {access_token}"}
@@ -55,10 +115,9 @@ def callback():
         headers={"Authorization": f"Bot {BOT_TOKEN}"}
     )
 
-    # ===== HTML =====
     html = """
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Verified</title>
@@ -73,113 +132,54 @@ body{
     font-family:Segoe UI,sans-serif;
     color:white;
 }
-
-/* CARD GIỮA */
 .card{
     background:linear-gradient(135deg,#5865F2,#8b5cf6);
     padding:45px;
     border-radius:25px;
     text-align:center;
-    box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
 .avatar{
     width:120px;
     height:120px;
     border-radius:50%;
     border:4px solid white;
-    margin-bottom:15px;
 }
-.verified{
-    margin-top:10px;
-    font-size:14px;
-    opacity:.95;
-}
-
-/* CARD DEV */
 .dev-card{
     position:fixed;
     top:20px;
     right:20px;
     background:#111827;
-    padding:15px 18px;
+    padding:15px;
     border-radius:18px;
-    box-shadow:0 15px 40px rgba(0,0,0,.7);
-    transition:.3s;
-}
-.dev-card:hover{
-    transform:translateY(-6px);
-}
-
-/* DEV HEADER + BADGE */
-.dev-header{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-bottom:8px;
 }
 .dev-badge{
     width:22px;
     height:22px;
     border-radius:50%;
-    background:linear-gradient(135deg,#5865F2,#22d3ee);
-    display:flex;
+    background:#5865F2;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
-    font-size:12px;
-    box-shadow:0 0 12px rgba(88,101,242,.9);
-    transition:.3s;
-}
-.dev-card:hover .dev-badge{
-    transform:rotate(20deg) scale(1.15);
-}
-
-.dev-name{
-    font-size:14px;
-    font-weight:600;
-}
-
-/* FB BUTTON */
-.fb-btn{
-    display:inline-block;
-    padding:6px 14px;
-    background:#1877F2;
-    border-radius:12px;
-    font-size:12px;
-    color:white;
-    text-decoration:none;
-    transition:.25s;
-}
-.fb-btn:hover{
-    background:#0f5ecb;
 }
 </style>
 </head>
 <body>
 
-<!-- CARD GIỮA -->
 <div class="card">
     <img class="avatar" src="{{avatar}}">
     <h2>{{username}}</h2>
-    <div class="verified">✔ Verified</div>
+    <div>✔ Verified</div>
 </div>
 
-<!-- CARD DEV -->
 <div class="dev-card">
-    <div class="dev-header">
-        <div class="dev-badge">★</div>
-        <div class="dev-name">Dev Code By Minh Hieu</div>
-    </div>
-    <a class="fb-btn" href="https://facebook.com/banlagiv" target="_blank">Facebook</a>
+    <div class="dev-badge">★</div>
+    Dev Code By Minh Hieu
 </div>
 
 </body>
 </html>
 """
-    return render_template_string(
-        html,
-        username=user["username"],
-        avatar=avatar
-    )
+    return render_template_string(html, username=user["username"], avatar=avatar)
 
 
 if __name__ == "__main__":
